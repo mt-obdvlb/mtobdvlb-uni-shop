@@ -6,6 +6,7 @@
     <option name="manifestPath" value="$PROJECT_DIR$/src/manifest.json" />
     <option name="pagesPath" value="$PROJECT_DIR$/src/pages.json" />
     <option name="scanNum" value="1" />
+    <option name="subProject" value="true" />
     <option name="type" value="store" />
     <option name="uniapp" value="true" />
     <option name="uniappCli" value="true" />
