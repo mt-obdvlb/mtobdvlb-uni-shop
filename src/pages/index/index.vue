@@ -14,6 +14,7 @@ const bannerList = ref<BannerItem[]>([])
 const categoryList = ref<CategoryItem[]>([])
 const hotList = ref<HotItem[]>([])
 const guessRef = ref<XtxGuessInstance>()
+const isTriggered = ref(false)
 
 const getHomeBannerData = async () => {
   const res = await getHomeBannerAPI()
@@ -34,6 +35,12 @@ const onScrollToLower = () => {
   console.log('上拉加载更多')
 }
 
+const onRefresherrefresh = async () => {
+  isTriggered.value = true
+  await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData()])
+  isTriggered.value = false
+}
+
 onLoad(() => {
   getHomeBannerData()
   getHomeCategoryData()
@@ -43,7 +50,14 @@ onLoad(() => {
 
 <template>
   <CustomNavbar />
-  <scroll-view class="scroll-view" scroll-y @scrolltolower="onScrollToLower">
+  <scroll-view
+    :refresher-triggered="isTriggered"
+    class="scroll-view"
+    refresher-enabled
+    scroll-y
+    @refresherrefresh="onRefresherrefresh"
+    @scrolltolower="onScrollToLower"
+  >
     <XtxSwiper :list="bannerList" />
     <CategoryPanel :list="categoryList" />
     <HotPanel :list="hotList" />
