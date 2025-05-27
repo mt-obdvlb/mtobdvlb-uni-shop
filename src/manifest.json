@@ -1,5 +1,5 @@
 {
-  "name": "小兔鲜儿",
+  "name": "mtobdvlb-uni-shop",
   "appid": "",
   "description": "",
   "versionName": "1.0.0",
@@ -50,7 +50,7 @@
   "quickapp": {},
   /* 小程序特有相关 */
   "mp-weixin": {
-    "appid": "",
+    "appid": "wx2fbfd1facb6aa8c1",
     "setting": {
       "urlCheck": false
     },
