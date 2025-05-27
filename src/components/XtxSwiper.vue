@@ -2,11 +2,15 @@
 import { ref } from 'vue'
 
 const activeIndex = ref(0)
+
+const onChange: UniHelper.SwiperOnChange = (ev) => {
+  activeIndex.value = ev.detail?.current
+}
 </script>
 
 <template>
   <view class="carousel">
-    <swiper :autoplay="false" :circular="true" :interval="3000">
+    <swiper :autoplay="false" :circular="true" :interval="3000" @change="onChange">
       <swiper-item>
         <navigator class="navigator" hover-class="none" url="/pages/index/index">
           <image
