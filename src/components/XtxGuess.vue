@@ -3,13 +3,28 @@
 import { getHomeGoodsGuessLikeAPI } from '@/services/home.ts'
 import { onMounted, ref } from 'vue'
 import type { GuessItem } from '@/types/home'
+import type { PageParams } from '@/types/global'
 
+const pageParams: Required<PageParams> = {
+  page: 1,
+  pageSize: 10,
+}
 const list = ref<GuessItem[]>([])
 
+const finish = ref(false)
+
 const getHomeGoodsGuessLikeData = async () => {
+  if (finish.value)
+    return uni.showToast({
+      title: '没有更多数据了',
+      icon: 'none',
+    })
   const res = await getHomeGoodsGuessLikeAPI()
-  list.value = res.result.items
+  // list.value = res.result.items
   // console.log(res)
+  list.value.push(...res.result.items)
+  if (pageParams.page < res.result.pages) pageParams.page++
+  else finish.value = true
 }
 
 onMounted(() => {
@@ -41,7 +56,9 @@ defineExpose({
       </view>
     </navigator>
   </view>
-  <view class="loading-text"> 正在加载...</view>
+  <view class="loading-text">
+    {{ finish ? '没有更多数据了' : ' 正在加载...' }}
+  </view>
 </template>
 
 <style lang="scss">
