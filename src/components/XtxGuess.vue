@@ -1,5 +1,20 @@
 <script lang="ts" setup>
 //
+import { getHomeGoodsGuessLikeAPI } from '@/services/home.ts'
+import { onMounted, ref } from 'vue'
+import type { GuessItem } from '@/types/home'
+
+const list = ref<GuessItem[]>([])
+
+const getHomeGoodsGuessLikeData = async () => {
+  const res = await getHomeGoodsGuessLikeAPI()
+  list.value = res.result.items
+  // console.log(res)
+}
+
+onMounted(() => {
+  getHomeGoodsGuessLikeData()
+})
 </script>
 
 <template>
@@ -9,20 +24,16 @@
   </view>
   <view class="guess">
     <navigator
-      v-for="item in 10"
-      :key="item"
-      :url="`/pages/goods/goods?id=4007498`"
+      v-for="item in list"
+      :key="item.id"
+      :url="`/pages/goods/goods?id=${item.id}`"
       class="guess-item"
     >
-      <image
-        class="image"
-        mode="aspectFill"
-        src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/uploads/goods_big_1.jpg"
-      ></image>
-      <view class="name"> 德国THORE男表 超薄手表男士休闲简约夜光石英防水直径40毫米 </view>
+      <image :src="item.picture" class="image" mode="aspectFill"></image>
+      <view class="name"> {{ item.name }}</view>
       <view class="price">
         <text class="small">¥</text>
-        <text>899.00</text>
+        <text>{{ item.price }}</text>
       </view>
     </navigator>
   </view>
