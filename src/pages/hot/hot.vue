@@ -20,7 +20,11 @@ const currentHot = hotMap.find((item) => item.type === query.type)
 uni.setNavigationBarTitle({ title: currentHot!.title })
 
 const bannerPicture = ref('')
-const subTypes = ref<SubTypeItem[]>([])
+const subTypes = ref<
+  (SubTypeItem & {
+    finish?: boolean
+  })[]
+>([])
 const activeIndex = ref(0)
 
 const getHotRecommendData = async () => {
@@ -32,8 +36,15 @@ const getHotRecommendData = async () => {
 const onScrolltolower = async () => {
   // 获取下一页数据
   const currentTypes = subTypes.value[activeIndex.value]
-
-  currentTypes.goodsItems.pages++
+  if (currentTypes.goodsItems.page < currentTypes.goodsItems.pages) {
+    currentTypes.goodsItems.page++
+  } else {
+    currentTypes.finish = true
+    return uni.showToast({
+      title: '没有更多数据了',
+      icon: 'none',
+    })
+  }
   const res = await getHotRecommendAPI(currentHot!.url, {
     subType: currentTypes.id,
     page: currentTypes.goodsItems.page,
@@ -91,7 +102,9 @@ onLoad(() => {
           </view>
         </navigator>
       </view>
-      <view class="loading-text">正在加载...</view>
+      <view class="loading-text">
+        {{ item.finish ? '没有更多数据了' : '加载中...' }}
+      </view>
     </scroll-view>
   </view>
 </template>
