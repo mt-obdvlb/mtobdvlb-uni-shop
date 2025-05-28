@@ -16,7 +16,7 @@ const props = defineProps<{
         <text class="title-text">{{ item.title }}</text>
         <text class="title-desc">{{ item.alt }}</text>
       </view>
-      <navigator class="cards" hover-class="none" url="/pages/hot/hot">
+      <navigator :url="`/pages/hot/hot?type=${item.type}`" class="cards" hover-class="none">
         <image
           v-for="img in item.pictures"
           :key="img"
