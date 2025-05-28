@@ -29,6 +29,21 @@ const getHotRecommendData = async () => {
   subTypes.value = res.result.subTypes
 }
 
+const onScrolltolower = async () => {
+  // 获取下一页数据
+  const currentTypes = subTypes.value[activeIndex.value]
+
+  currentTypes.goodsItems.pages++
+  const res = await getHotRecommendAPI(currentHot!.url, {
+    subType: currentTypes.id,
+    page: currentTypes.goodsItems.page,
+    pageSize: currentTypes.goodsItems.pageSize,
+  })
+  const newGoods = res.result.subTypes[activeIndex.value].goodsItems.items
+  currentTypes.goodsItems.items.push(...newGoods)
+  console.log(currentTypes)
+}
+
 onLoad(() => {
   getHotRecommendData()
 })
@@ -58,6 +73,7 @@ onLoad(() => {
       :key="item.id"
       class="scroll-view"
       scroll-y
+      @scrolltolower="onScrolltolower"
     >
       <view class="goods">
         <navigator

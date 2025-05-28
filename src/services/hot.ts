@@ -10,5 +10,6 @@ export const getHotRecommendAPI = (url: string, data?: HotParams) => {
   return http<HotResult>({
     method: 'GET',
     url,
+    data,
   })
 }
