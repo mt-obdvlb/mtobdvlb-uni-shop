@@ -2,6 +2,9 @@
 <script lang="ts" setup>
 // 热门推荐页 标题和url
 
+import { getHotRecommendAPI } from '@/services/hot.ts'
+import { onLoad } from '@dcloudio/uni-app'
+
 const hotMap = [
   { type: '1', title: '特惠推荐', url: '/hot/preference' },
   { type: '2', title: '爆款推荐', url: '/hot/inVogue' },
@@ -11,8 +14,17 @@ const hotMap = [
 const query = defineProps<{
   type: string
 }>()
-const currentHotMap = hotMap.find((item) => item.type === query.type)
-uni.setNavigationBarTitle({ title: currentHotMap!.title })
+const currentHot = hotMap.find((item) => item.type === query.type)
+uni.setNavigationBarTitle({ title: currentHot!.title })
+
+const getHotRecommendData = async () => {
+  const res = await getHotRecommendAPI(currentHot!.url)
+  console.log(res)
+}
+
+onLoad(() => {
+  getHotRecommendData()
+})
 </script>
 
 <template>
