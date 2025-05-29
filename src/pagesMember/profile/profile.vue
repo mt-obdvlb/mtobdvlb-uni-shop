@@ -53,11 +53,14 @@ const onAvatarChange = () => {
 }
 
 const onSubmit = async () => {
-  const { nickname, gender, birthday, profession, fullLocation } = profile.value
+  const { nickname, gender, birthday } = profile.value
   const res = await putMemberProfileAPI({
     nickname,
     gender,
     birthday,
+    provinceCode: fullLocationCode[0],
+    cityCode: fullLocationCode[1],
+    countyCode: fullLocationCode[2],
   })
   memberStore.profile!.nickname = res.result.nickname
   await uni.showToast({
@@ -73,6 +76,12 @@ const onGenderChange: UniHelper.RadioGroupOnChange = async (e) => {
 
 const onBirthdayChange: UniHelper.DatePickerOnChange = async (e) => {
   profile.value.birthday = e.detail.value
+}
+
+let fullLocationCode: [string, string, string] = ['', '', '']
+const onFullLocationChange: UniHelper.RegionPickerOnCancel = async (e) => {
+  profile.value.fullLocation = e.detail.value.join(' ')
+  fullLocationCode = e.detail.code!
 }
 
 onLoad(() => {
@@ -137,7 +146,12 @@ onLoad(() => {
         </view>
         <view class="form-item">
           <text class="label">城市</text>
-          <picker :value="profile?.fullLocation?.split(' ')" class="picker" mode="region">
+          <picker
+            :value="profile?.fullLocation?.split(' ')"
+            class="picker"
+            mode="region"
+            @change="onFullLocationChange"
+          >
             <view v-if="profile?.fullLocation">
               {{ profile?.fullLocation?.split(' ').join('') }}
             </view>
