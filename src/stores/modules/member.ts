@@ -1,15 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import type { LoginResult } from '@/types/member'
 
 // 定义 Store
 export const useMemberStore = defineStore(
   'member',
   () => {
     // 会员信息
-    const profile = ref<any>()
+    const profile = ref<LoginResult>()
 
     // 保存会员信息，登录时使用
-    const setProfile = (val: any) => {
+    const setProfile = (val: LoginResult) => {
       profile.value = val
     }
 
@@ -35,7 +36,7 @@ export const useMemberStore = defineStore(
         getItem(key: string) {
           return uni.getStorageSync(key)
         },
-      }
-    }
+      },
+    },
   },
 )

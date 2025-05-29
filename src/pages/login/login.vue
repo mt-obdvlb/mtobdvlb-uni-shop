@@ -4,6 +4,7 @@
 //
 import { onLoad } from '@dcloudio/uni-app'
 import { postLoginWxMinSimpleAPI } from '@/services/login.ts'
+import { useMemberStore } from '@/stores'
 
 let code = ''
 
@@ -12,8 +13,10 @@ const onGetphoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
   const iv = ev.detail?.iv!
   console.log(code, encryptedData, iv)
   const res = await postLoginWxMinSimpleAPI('13538868899')
-  console.log(res)
-  uni.showToast({ icon: 'none', title: '登录成功' })
+  const memberStore = useMemberStore()
+  memberStore.setProfile(res.result)
+  await uni.showToast({ icon: 'none', title: '登录成功' })
+  uni.switchTab({ url: '/pages/my/my' })
 }
 
 onLoad(async () => {
