@@ -14,6 +14,10 @@ const query = defineProps<{
 
 const goods = ref<GoodsResult>()
 const currentIndex = ref(0)
+const popup = ref<{
+  open: (type?: UniHelper.UniPopupType) => void
+  close: () => void
+}>()
 
 const getGoodsByIdData = async () => {
   const res = await getGoodsByIdAPI(query.id)
@@ -76,7 +80,7 @@ onLoad(() => {
           <text class="label">送至</text>
           <text class="text ellipsis"> 请选择收获地址</text>
         </view>
-        <view class="item arrow">
+        <view class="item arrow" @tap="popup?.open()">
           <text class="label">服务</text>
           <text class="text ellipsis"> 无忧退 快速退款 免费包邮 </text>
         </view>
@@ -151,6 +155,10 @@ onLoad(() => {
       <view class="buynow"> 立即购买</view>
     </view>
   </view>
+  <uni-popup ref="popup" background-color="#fff" type="bottom">
+    <view>12345</view>
+    <button @tap="popup?.close">关闭</button>
+  </uni-popup>
 </template>
 
 <style lang="scss">
