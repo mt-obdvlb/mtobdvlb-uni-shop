@@ -2,7 +2,7 @@
 // 获取屏幕边界到安全区域距离
 import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile.ts'
 import { onLoad } from '@dcloudio/uni-app'
-import type { ProfileDetail } from '@/types/member'
+import type { Gender, ProfileDetail } from '@/types/member'
 import { ref } from 'vue'
 import { useMemberStore } from '@/stores'
 
@@ -55,6 +55,7 @@ const onAvatarChange = () => {
 const onSubmit = async () => {
   const res = await putMemberProfileAPI({
     nickname: profile.value.nickname,
+    gender: profile.value.gender,
   })
   memberStore.profile!.nickname = res.result.nickname
   await uni.showToast({
@@ -62,6 +63,11 @@ const onSubmit = async () => {
     icon: 'success',
   })
   uni.navigateBack()
+}
+
+const onGenderChange: UniHelper.RadioGroupOnChange = async (e) => {
+  const gender = e.detail.value as Gender
+  profile.value.gender = gender
 }
 
 onLoad(() => {
@@ -97,7 +103,7 @@ onLoad(() => {
         </view>
         <view class="form-item">
           <text class="label">性别</text>
-          <radio-group>
+          <radio-group @change="onGenderChange">
             <label class="radio">
               <radio :checked="profile?.gender === '男'" color="#27ba9b" value="男" />
               男
