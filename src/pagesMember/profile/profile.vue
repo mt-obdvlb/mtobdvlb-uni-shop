@@ -53,9 +53,11 @@ const onAvatarChange = () => {
 }
 
 const onSubmit = async () => {
+  const { nickname, gender, birthday, profession, fullLocation } = profile.value
   const res = await putMemberProfileAPI({
-    nickname: profile.value.nickname,
-    gender: profile.value.gender,
+    nickname,
+    gender,
+    birthday,
   })
   memberStore.profile!.nickname = res.result.nickname
   await uni.showToast({
@@ -66,8 +68,11 @@ const onSubmit = async () => {
 }
 
 const onGenderChange: UniHelper.RadioGroupOnChange = async (e) => {
-  const gender = e.detail.value as Gender
-  profile.value.gender = gender
+  profile.value.gender = e.detail.value as Gender
+}
+
+const onBirthdayChange: UniHelper.DatePickerOnChange = async (e) => {
+  profile.value.birthday = e.detail.value
 }
 
 onLoad(() => {
@@ -122,6 +127,7 @@ onLoad(() => {
             class="picker"
             mode="date"
             start="1900-01-01"
+            @change="onBirthdayChange"
           >
             <view v-if="profile?.birthday">
               {{ profile?.birthday }}
