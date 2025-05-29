@@ -111,7 +111,7 @@
     }
   ],
   "preloadRule": {
-    "page/my/my": {
+    "pages/my/my": {
       "network": "all",
       "packages": [
         "pagesMember"
