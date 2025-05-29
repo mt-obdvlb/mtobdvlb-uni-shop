@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 //
 import { getHomeBannerAPI } from '@/services/home.ts'
+import type { ComputedRef } from 'vue'
 import { computed, ref } from 'vue'
 import type { BannerItem } from '@/types/home'
 import { onLoad } from '@dcloudio/uni-app'
 import { getCategoryTopAPI } from '@/services/category.ts'
 import type { CategoryChildItem, CategoryTopItem } from '@/types/category'
-import type { ComputedRef } from 'vue'
+import PageSkeleton from '@/pages/category/components/PageSkeleton.vue'
 
 const bannerList = ref<BannerItem[]>([])
 const categoryList = ref<CategoryTopItem[]>([])
 const activeIndex = ref(0)
+const isLoading = ref(true)
 
 const getBannerData = async () => {
   const res = await getHomeBannerAPI(2)
@@ -28,13 +30,16 @@ const subCategoryList: ComputedRef<CategoryChildItem[]> = computed(() => {
 })
 
 onLoad(() => {
+  isLoading.value = true
   getBannerData()
   getCategoryTopData()
+  isLoading.value = false
 })
 </script>
 
 <template>
-  <view class="viewport">
+  <PageSkeleton v-if="isLoading" />
+  <view v-else class="viewport">
     <!-- 搜索框 -->
     <view class="search">
       <view class="input">
