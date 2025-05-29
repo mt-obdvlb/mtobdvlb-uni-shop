@@ -5,6 +5,8 @@ import { getGoodsByIdAPI } from '@/services/goods.ts'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { GoodsResult } from '@/types/goods'
+import ServicePanel from '@/pages/goods/components/ServicePanel.vue'
+import AddressPanel from '@/pages/goods/components/AddressPanel.vue'
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
@@ -18,6 +20,11 @@ const popup = ref<{
   open: (type?: UniHelper.UniPopupType) => void
   close: () => void
 }>()
+const popupName = ref<'address' | 'service'>()
+const openPopup = (name: typeof popupName.value) => {
+  popupName.value = name
+  popup.value?.open()
+}
 
 const getGoodsByIdData = async () => {
   const res = await getGoodsByIdAPI(query.id)
@@ -76,11 +83,11 @@ onLoad(() => {
           <text class="label">选择</text>
           <text class="text ellipsis"> 请选择商品规格</text>
         </view>
-        <view class="item arrow">
+        <view class="item arrow" @tap="openPopup('address')">
           <text class="label">送至</text>
           <text class="text ellipsis"> 请选择收获地址</text>
         </view>
-        <view class="item arrow" @tap="popup?.open()">
+        <view class="item arrow" @tap="openPopup('service')">
           <text class="label">服务</text>
           <text class="text ellipsis"> 无忧退 快速退款 免费包邮 </text>
         </view>
@@ -156,8 +163,8 @@ onLoad(() => {
     </view>
   </view>
   <uni-popup ref="popup" background-color="#fff" type="bottom">
-    <view>12345</view>
-    <button @tap="popup?.close">关闭</button>
+    <ServicePanel v-if="popupName === 'service'" @close="popup?.close()" />
+    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" />
   </uni-popup>
 </template>
 
