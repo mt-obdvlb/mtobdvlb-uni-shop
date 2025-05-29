@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 // 获取屏幕边界到安全区域距离
-import { getMemberProfileAPI } from '@/services/profile.ts'
+import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile.ts'
 import { onLoad } from '@dcloudio/uni-app'
 import type { ProfileDetail } from '@/types/member'
 import { ref } from 'vue'
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
-const profile = ref<ProfileDetail>()
+const profile = ref<ProfileDetail>({} as ProfileDetail)
 
 const getMemberProfileData = async () => {
   const res = await getMemberProfileAPI()
@@ -47,6 +47,16 @@ const onAvatarChange = () => {
   })
 }
 
+const onSubmit = async () => {
+  const res = await putMemberProfileAPI({
+    nickname: profile.value.nickname,
+  })
+  uni.showToast({
+    title: '修改成功',
+    icon: 'success',
+  })
+}
+
 onLoad(() => {
   getMemberProfileData()
 })
@@ -76,7 +86,7 @@ onLoad(() => {
         </view>
         <view class="form-item">
           <text class="label">昵称</text>
-          <input :value="profile?.nickname" class="input" placeholder="请填写昵称" type="text" />
+          <input v-model="profile!.nickname" class="input" placeholder="请填写昵称" type="text" />
         </view>
         <view class="form-item">
           <text class="label">性别</text>
@@ -121,7 +131,7 @@ onLoad(() => {
         </view>
       </view>
       <!-- 提交按钮 -->
-      <button class="form-button">保 存</button>
+      <button class="form-button" @tap="onSubmit">保 存</button>
     </view>
   </view>
 </template>
