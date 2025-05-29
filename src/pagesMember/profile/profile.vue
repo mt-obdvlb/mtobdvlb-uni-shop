@@ -4,6 +4,7 @@ import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile.ts'
 import { onLoad } from '@dcloudio/uni-app'
 import type { ProfileDetail } from '@/types/member'
 import { ref } from 'vue'
+import { useMemberStore } from '@/stores'
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
@@ -13,6 +14,8 @@ const getMemberProfileData = async () => {
   const res = await getMemberProfileAPI()
   profile.value = res.result
 }
+
+const memberStore = useMemberStore()
 
 const onAvatarChange = () => {
   uni.chooseMedia({
@@ -28,14 +31,16 @@ const onAvatarChange = () => {
           if (res.statusCode === 200) {
             const avatar = JSON.parse(res.data).result.avatar
             profile.value!.avatar = avatar
-
+            memberStore.profile!.avatar = avatar
             uni.showToast({
               title: '修改成功',
               icon: 'success',
             })
           } else {
-            profile.value!.avatar =
-              'http://mtobdvlb-web.oss-cn-beijing.aliyuncs.com/private/mako.jpg'
+            const avatar = 'http://mtobdvlb-web.oss-cn-beijing.aliyuncs.com/private/mako.jpg'
+            profile.value!.avatar = avatar
+
+            memberStore.profile!.avatar = avatar
             uni.showToast({
               title: '修改成功',
               icon: 'success',
@@ -51,10 +56,12 @@ const onSubmit = async () => {
   const res = await putMemberProfileAPI({
     nickname: profile.value.nickname,
   })
-  uni.showToast({
+  memberStore.profile!.nickname = res.result.nickname
+  await uni.showToast({
     title: '修改成功',
     icon: 'success',
   })
+  uni.navigateBack()
 }
 
 onLoad(() => {
