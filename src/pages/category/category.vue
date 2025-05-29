@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 //
 import { getHomeBannerAPI } from '@/services/home.ts'
-import { ref } from 'vue'
-import type { BannerItem, CategoryItem } from '@/types/home'
+import { computed, ref } from 'vue'
+import type { BannerItem } from '@/types/home'
 import { onLoad } from '@dcloudio/uni-app'
 import { getCategoryTopAPI } from '@/services/category.ts'
+import type { CategoryChildItem, CategoryTopItem } from '@/types/category'
+import type { ComputedRef } from 'vue'
 
 const bannerList = ref<BannerItem[]>([])
-const categoryList = ref<CategoryItem[]>([])
+const categoryList = ref<CategoryTopItem[]>([])
 const activeIndex = ref(0)
 
 const getBannerData = async () => {
   const res = await getHomeBannerAPI(2)
+  // console.log(res)
   bannerList.value = res.result
 }
 
@@ -19,6 +22,10 @@ const getCategoryTopData = async () => {
   const res = await getCategoryTopAPI()
   categoryList.value = res.result
 }
+
+const subCategoryList: ComputedRef<CategoryChildItem[]> = computed(() => {
+  return categoryList.value[activeIndex.value]?.children || []
+})
 
 onLoad(() => {
   getBannerData()
@@ -53,27 +60,24 @@ onLoad(() => {
         <!-- 焦点图 -->
         <XtxSwiper :list="bannerList" class="banner" />
         <!-- 内容区域 -->
-        <view v-for="item in 3" :key="item" class="panel">
+        <view v-for="item in subCategoryList" :key="item.id" class="panel">
           <view class="title">
-            <text class="name">宠物用品</text>
+            <text class="name">{{ item.name }}</text>
             <navigator class="more" hover-class="none"> 全部 </navigator>
           </view>
           <view class="section">
             <navigator
-              v-for="goods in 4"
-              :key="goods"
-              :url="`/pages/goods/goods?id=`"
+              v-for="goods in item.goods"
+              :key="goods.id"
+              :url="`/pages/goods/goods?id=${goods.id}`"
               class="goods"
               hover-class="none"
             >
-              <image
-                class="image"
-                src="https://yanxuan-item.nosdn.127.net/674ec7a88de58a026304983dd049ea69.jpg"
-              ></image>
-              <view class="name ellipsis">木天蓼逗猫棍 </view>
+              <image :src="goods.picture" class="image"></image>
+              <view class="name ellipsis">{{ goods.name }} </view>
               <view class="price">
                 <text class="symbol">¥</text>
-                <text class="number">16.00</text>
+                <text class="number">{{ goods.price }} </text>
               </view>
             </navigator>
           </view>

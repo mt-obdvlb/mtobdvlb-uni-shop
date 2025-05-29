@@ -1,8 +1,8 @@
 import { http } from '@/utils/http.ts'
-import type { CategoryItem } from '@/types/home'
+import type { CategoryTopItem } from '@/types/category'
 
 export const getCategoryTopAPI = () => {
-  return http<CategoryItem[]>({
+  return http<CategoryTopItem[]>({
     method: 'GET',
     url: '/category/top',
   })
