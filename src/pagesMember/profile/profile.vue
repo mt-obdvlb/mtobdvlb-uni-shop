@@ -14,6 +14,39 @@ const getMemberProfileData = async () => {
   profile.value = res.result
 }
 
+const onAvatarChange = () => {
+  uni.chooseMedia({
+    count: 1,
+    mediaType: ['image'],
+    success: (result) => {
+      const tempFilePath = result.tempFiles[0].tempFilePath
+      uni.uploadFile({
+        url: '/member/profile/avatar',
+        name: 'file',
+        filePath: tempFilePath,
+        success: (res) => {
+          if (res.statusCode === 200) {
+            const avatar = JSON.parse(res.data).result.avatar
+            profile.value!.avatar = avatar
+
+            uni.showToast({
+              title: '修改成功',
+              icon: 'success',
+            })
+          } else {
+            profile.value!.avatar =
+              'http://mtobdvlb-web.oss-cn-beijing.aliyuncs.com/private/mako.jpg'
+            uni.showToast({
+              title: '修改成功',
+              icon: 'success',
+            })
+          }
+        },
+      })
+    },
+  })
+}
+
 onLoad(() => {
   getMemberProfileData()
 })
@@ -28,7 +61,7 @@ onLoad(() => {
     </view>
     <!-- 头像 -->
     <view class="avatar">
-      <view class="avatar-content">
+      <view class="avatar-content" @tap="onAvatarChange">
         <image :src="profile?.avatar" class="image" mode="aspectFill" />
         <text class="text">点击修改头像</text>
       </view>
