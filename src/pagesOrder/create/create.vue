@@ -78,7 +78,8 @@ const onOrderSubmit = async () => {
     payType: 1,
     payChannel: 2,
   })
-  uni.redirectTo({ url: `/pagesOrder/detail/detail/${res.result.id}` })
+  console.log(res)
+  uni.redirectTo({ url: `/pagesOrder/detail/detail?id=${res.result.id}` })
 }
 </script>
 
