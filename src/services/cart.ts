@@ -13,3 +13,10 @@ export const getMemberCartAPI = () =>
     method: 'GET',
     url: '/member/cart',
   })
+
+export const deleteMemberCartAPI = (data: { ids: string[] }) =>
+  http({
+    method: 'DELETE',
+    url: '/member/cart',
+    data,
+  })
