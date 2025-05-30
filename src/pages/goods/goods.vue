@@ -216,7 +216,7 @@ const onAddCart = async (ev: SkuPopupEvent) => {
         <text class="icon-handset"></text>
         客服
       </button>
-      <navigator class="icons-button" open-type="switchTab" url="/pages/cart/cart">
+      <navigator class="icons-button" open-type="navigate" url="/pages/cart/cart2">
         <text class="icon-cart"></text>
         购物车
       </navigator>
