@@ -29,3 +29,10 @@ export const putMemberAddressByIdAPI = (id: string, data: AddressParams) => {
     data,
   })
 }
+
+export const deleteMemberAddressByIdAPI = (id: string) => {
+  return http({
+    method: 'DELETE',
+    url: `/member/address/${id}`,
+  })
+}

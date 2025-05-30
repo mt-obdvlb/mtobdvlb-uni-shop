@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 //
 
-import { getMemberAddressAPI } from '@/services/address.ts'
+import { deleteMemberAddressByIdAPI, getMemberAddressAPI } from '@/services/address.ts'
 import { ref } from 'vue'
 import type { AddressItem } from '@/types/address'
 import { onShow } from '@dcloudio/uni-app'
@@ -16,16 +16,28 @@ const getMemberAddressData = async () => {
 onShow(() => {
   getMemberAddressData()
 })
+
+const onDeleteAddress = (id: string) => {
+  uni.showModal({
+    content: '是否删除该地址',
+    success: async (res) => {
+      if (res.confirm) {
+        await deleteMemberAddressByIdAPI(id)
+        getMemberAddressData()
+      }
+    },
+  })
+}
 </script>
 
 <template>
   <view class="viewport">
     <!-- 地址列表 -->
     <scroll-view class="scroll-view" scroll-y>
-      <view v-if="addressList" class="address">
-        <view class="address-list">
+      <view v-if="addressList.length" class="address">
+        <uni-swipe-action class="address-list">
           <!-- 收货地址项 -->
-          <view v-for="item in addressList" :key="item.id" class="item">
+          <uni-swipe-action-item v-for="item in addressList" :key="item.id" class="item">
             <view class="item-content">
               <view class="user">
                 {{ item.receiver }}
@@ -33,7 +45,7 @@ onShow(() => {
                 <text v-if="item.isDefault" class="badge"> 默认 </text>
               </view>
               <view class="locate"
-                >{{ item.fullLoaction }}
+                >{{ item.fullLocation }}
                 {{ item.address }}
               </view>
               <navigator
@@ -44,9 +56,12 @@ onShow(() => {
                 修改
               </navigator>
             </view>
-          </view>
+            <template #right>
+              <button class="delete-button" @tap="onDeleteAddress(item.id)">删除</button>
+            </template>
+          </uni-swipe-action-item>
           <!-- 收货地址项 -->
-        </view>
+        </uni-swipe-action>
       </view>
       <view v-else class="blank">暂无收货地址</view>
     </scroll-view>
