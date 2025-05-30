@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import CustomNavbar from '@/pages/index/components/CustomNavbar.vue'
 import XtxSwiper from '@/components/XtxSwiper.vue'
 import { getHomeBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/services/home.ts'
 import { onLoad } from '@dcloudio/uni-app'
@@ -10,6 +9,7 @@ import HotPanel from '@/pages/index/components/HotPanel.vue'
 import XtxGuess from '@/components/XtxGuess.vue'
 import type { XtxGuessInstance } from '@/types/components'
 import PageSkeleton from '@/pages/index/components/PageSkeleton.vue'
+import CustomNavbar from '@/pages/index/components/CustomNavbar.vue'
 
 const bannerList = ref<BannerItem[]>([])
 const categoryList = ref<CategoryItem[]>([])
