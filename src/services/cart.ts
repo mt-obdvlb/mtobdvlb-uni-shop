@@ -33,3 +33,13 @@ export const putMemberCartBySkuIdAPI = (
     url: `/member/cart/${skuId}`,
     data,
   })
+
+export const putMemberCartSelectedAPI = (selected: boolean) => {
+  return http({
+    method: 'PUT',
+    url: '/member/cart/selected',
+    data: {
+      selected,
+    },
+  })
+}
