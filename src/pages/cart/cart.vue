@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 //
 import { useMemberStore } from '@/stores'
-import { deleteMemberCartAPI, getMemberCartAPI } from '@/services/cart.ts'
+import { deleteMemberCartAPI, getMemberCartAPI, putMemberCartBySkuIdAPI } from '@/services/cart.ts'
 import { onShow } from '@dcloudio/uni-app'
 import type { CartItem } from '@/types/cart'
 import { ref } from 'vue'
+import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box'
 
 const cartList = ref<CartItem[]>()
 
@@ -30,6 +31,10 @@ const onDeleteCart = (skuId: string) => {
       }
     },
   })
+}
+
+const onChangeCount = (ev: InputNumberBoxEvent) => {
+  putMemberCartBySkuIdAPI(ev.index, { count: ev.value })
 }
 
 const memberStore = useMemberStore()
@@ -70,9 +75,13 @@ const memberStore = useMemberStore()
               </navigator>
               <!-- 商品数量 -->
               <view class="count">
-                <text class="text">-</text>
-                <input :value="item.count.toString()" class="input" type="number" />
-                <text class="text">+</text>
+                <vk-data-input-number-box
+                  v-model="item.count"
+                  :index="item.skuId"
+                  :max="item.stock"
+                  :min="1"
+                  @change="onChangeCount"
+                />
               </view>
             </view>
             <!-- 右侧删除按钮 -->
