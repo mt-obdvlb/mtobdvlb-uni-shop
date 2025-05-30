@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { useGuessList } from '@/composables'
 import { ref } from 'vue'
-import { onReady } from '@dcloudio/uni-app'
+import { onLoad, onReady } from '@dcloudio/uni-app'
+import { getMemberOrderByIdAPI } from '@/services/order.ts'
+import type { OrderResult } from '@/types/order'
+import { OrderState, orderStateList } from '@/services/constants.ts'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -31,7 +34,8 @@ const query = defineProps<{
 }>()
 
 const pages = getCurrentPages()
-const pageInstance = pages.at(-1) as any
+type PageInstance = Page.PageInstance & WechatMiniprogram.Page.InstanceMethods<any>
+const pageInstance = pages.at(-1) as PageInstance
 onReady(() => {
   pageInstance.animate(
     '.navbar',
@@ -44,6 +48,16 @@ onReady(() => {
       endScrollOffset: 50,
     },
   )
+})
+
+const order = ref<OrderResult>()
+const getMemberOrderByIdData = async () => {
+  const res = await getMemberOrderByIdAPI(query.id)
+  order.value = res.result
+}
+
+onLoad(() => {
+  getMemberOrderByIdData()
 })
 </script>
 
@@ -62,11 +76,11 @@ onReady(() => {
     </view>
   </view>
   <scroll-view id="scroller" class="viewport" scroll-y @scrolltolower="onScrolltolower">
-    <template v-if="true">
+    <template v-if="order">
       <!-- 订单状态 -->
       <view :style="{ paddingTop: safeAreaInsets!.top + 20 + 'px' }" class="overview">
         <!-- 待付款状态:展示去支付按钮和倒计时 -->
-        <template v-if="true">
+        <template v-if="order?.orderState === OrderState.DaiFuKuan">
           <view class="status icon-clock">等待付款</view>
           <view class="tips">
             <text class="money">应付金额: ¥ 99.00</text>
@@ -78,7 +92,9 @@ onReady(() => {
         <!-- 其他订单状态:展示再次购买按钮 -->
         <template v-else>
           <!-- 订单状态文字 -->
-          <view class="status"> 待付款</view>
+          <view class="status">
+            {{ orderStateList[order!.orderState].text }}
+          </view>
           <view class="button-group">
             <navigator
               :url="`/pagesOrder/create/create?orderId=${query.id}`"
