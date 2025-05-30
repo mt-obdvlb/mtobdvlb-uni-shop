@@ -59,6 +59,37 @@ const onChangeSelectedAll = () => {
   })
   putMemberCartSelectedAPI(selected)
 }
+
+const selectedCartList = computed(() => {
+  return cartList.value?.filter((item) => item.selected)
+})
+
+const selectedCartListCount = computed(() => {
+  return selectedCartList.value?.reduce((total, item) => {
+    return total + item.count
+  }, 0)
+})
+
+const selectedCartListMoney = computed(() => {
+  return selectedCartList.value
+    ?.reduce((total, item) => {
+      return total + item.nowPrice * item.count
+    }, 0)
+    .toFixed(2)
+})
+
+const gotoPayment = () => {
+  if (selectedCartListCount.value === 0) {
+    uni.showToast({
+      title: '请选择商品',
+      icon: 'none',
+    })
+    return
+  }
+  uni.showToast({
+    title: '等待完成',
+  })
+}
 </script>
 
 <template>
@@ -132,9 +163,11 @@ const onChangeSelectedAll = () => {
           >全选
         </text>
         <text class="text">合计:</text>
-        <text class="amount">100</text>
-        <view class="button-grounp">
-          <view :class="{ disabled: true }" class="button payment-button"> 去结算(10) </view>
+        <text class="amount">{{ selectedCartListMoney }} </text>
+        <view class="button-grounp" @tap="gotoPayment">
+          <view :class="{ disabled: selectedCartListCount === 0 }" class="button payment-button">
+            去结算({{ selectedCartListCount }})
+          </view>
         </view>
       </view>
     </template>
