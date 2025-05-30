@@ -115,6 +115,20 @@
             "navigationBarTextStyle": "white",
             "enablePullDownRefresh": false
           }
+        },
+        {
+          "path": "address/address",
+          "style": {
+            "navigationBarTitleText": "地址管理",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "address-form/address-form",
+          "style": {
+            "navigationBarTitleText": "",
+            "enablePullDownRefresh": false
+          }
         }
       ]
     }
