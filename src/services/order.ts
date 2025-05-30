@@ -10,3 +10,15 @@ export const getMemberOrderPreAPI = () => {
     url: '/member/order/pre',
   })
 }
+
+export const getMemberOrderPreNowAPI = (data: {
+  skuId: string
+  count: number
+  addressId?: string
+}) => {
+  return http<OrderPreResult>({
+    method: 'GET',
+    url: '/member/order/pre/now',
+    data,
+  })
+}
