@@ -21,5 +21,5 @@ export type AddressItem = AddressParams & {
   /** id */
   id: string
   /** 创建时间 */
-  fullLoaction: string
+  fullLocation: string
 }

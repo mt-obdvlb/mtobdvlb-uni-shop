@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { postMemberAddressAPI } from '@/services/address.ts'
+import { getMemberAddressByIdAPI, postMemberAddressAPI } from '@/services/address.ts'
+import { onLoad } from '@dcloudio/uni-app'
 
 // 表单数据
 const form = ref({
@@ -32,6 +33,18 @@ const onRegionChange: UniHelper.RegionPickerOnChange = (e) => {
 const onSwitchChange: UniHelper.SwitchOnChange = (e) => {
   form.value.isDefault = e.detail.value ? 1 : 0
 }
+
+const getMemberAddressByIdData = async () => {
+  if (query.id) {
+    const res = await getMemberAddressByIdAPI(query.id)
+    Object.assign(form.value, res.result)
+  }
+}
+
+onLoad(() => {
+  getMemberAddressByIdData()
+})
+
 const onSubmit = async () => {
   await postMemberAddressAPI(form.value)
   await uni.showToast({
