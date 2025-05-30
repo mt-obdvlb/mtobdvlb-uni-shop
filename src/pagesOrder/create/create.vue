@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { getMemberOrderPreAPI, getMemberOrderPreNowAPI } from '@/services/order.ts'
+import {
+  getMemberOrderPreAPI,
+  getMemberOrderPreNowAPI,
+  postMemberOrderAPI,
+} from '@/services/order.ts'
 import { onLoad } from '@dcloudio/uni-app'
 import type { OrderPreResult } from '@/types/order'
 import { useAddressStore } from '@/stores/modules/address.ts'
@@ -55,6 +59,27 @@ const selectedAddress = computed(() => {
     addressStore.selectedAddress || orderPre.value?.userAddresses.find((item) => item.isDefault)
   )
 })
+
+const onOrderSubmit = async () => {
+  if (!selectedAddress.value?.id) {
+    return uni.showToast({
+      title: '请选择收货地址',
+      icon: 'none',
+    })
+  }
+  const res = await postMemberOrderAPI({
+    addressId: selectedAddress.value?.id,
+    buyerMessage: buyerMessage.value,
+    deliveryTimeType: activeDelivery.value.type,
+    goods: orderPre.value!.goods.map((item) => ({
+      count: item.count,
+      skuId: item.skuId,
+    })),
+    payType: 1,
+    payChannel: 2,
+  })
+  uni.redirectTo({ url: `/pagesOrder/detail/detail/${res.result.id}` })
+}
 </script>
 
 <template>
@@ -153,7 +178,9 @@ const selectedAddress = computed(() => {
         {{ orderPre?.summary.totalPayPrice.toFixed(2) }}
       </text>
     </view>
-    <view :class="{ disabled: true }" class="button"> 提交订单 </view>
+    <view :class="{ disabled: !selectedAddress?.id }" class="button" @tap="onOrderSubmit">
+      提交订单
+    </view>
   </view>
 </template>
 
