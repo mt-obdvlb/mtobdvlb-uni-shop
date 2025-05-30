@@ -16,7 +16,9 @@ const onGetphoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
   const memberStore = useMemberStore()
   memberStore.setProfile(res.result)
   await uni.showToast({ icon: 'none', title: '登录成功' })
-  uni.switchTab({ url: '/pages/my/my' })
+
+  // uni.switchTab({ url: '/pages/my/my' })
+  uni.navigateBack()
 }
 
 onLoad(async () => {
