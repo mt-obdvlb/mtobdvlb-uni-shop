@@ -5,6 +5,7 @@ import { useGuessList } from '@/composables'
 const query = defineProps<{
   id: string
 }>()
+console.log(query.id)
 
 // 猜你喜欢
 const { guessRef, onScrolltolower } = useGuessList()
